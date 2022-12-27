@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jshvarts.viewmodelflowdemo.ui.theme.ViewModelFlowDemoTheme
 
-class MainActivity : ComponentActivity() {
+class ComposeActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {
