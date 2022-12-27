@@ -24,7 +24,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class ComposeActivity : ComponentActivity() {
 
-  private val viewModel by viewModels<MainViewModel>()
+  private val viewModel by viewModels<MainWithStateInViewModel>()
 
   @OptIn(ExperimentalLifecycleComposeApi::class)
   override fun onCreate(savedInstanceState: Bundle?) {

@@ -5,14 +5,11 @@ import com.jshvarts.viewmodelflowdemo.data.User
 import com.jshvarts.viewmodelflowdemo.util.MainDispatcherRule
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 
-class MainViewModelTest {
+class MainWithCollectViewModelTest {
   @get:Rule
   val mainDispatcherRule = MainDispatcherRule()
 
@@ -21,7 +18,7 @@ class MainViewModelTest {
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun `when initialized, fake repository emits loading and data`() = runTest {
-    val viewModel = MainViewModel(repository)
+    val viewModel = MainWithCollectViewModel(repository)
 
     val users = listOf(
       User(
@@ -34,15 +31,12 @@ class MainViewModelTest {
       )
     )
 
-    val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
-      viewModel.userList.collect()
-    }
-
     assertEquals(UiState.Loading, viewModel.userList.value)
 
     repository.sendUsers(users)
-    assertEquals(UiState.Success(users), viewModel.userList.value)
 
-    collectJob.cancel()
+    viewModel.onRefresh()
+
+    assertEquals(UiState.Success(users), viewModel.userList.value)
   }
 }

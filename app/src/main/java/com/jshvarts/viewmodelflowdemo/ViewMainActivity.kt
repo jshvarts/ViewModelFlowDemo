@@ -13,7 +13,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class ViewMainActivity : AppCompatActivity(R.layout.activity_main) {
 
-  private val viewModel by viewModels<MainViewModel>()
+  private val viewModel by viewModels<MainWithCollectViewModel>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -25,6 +25,8 @@ class ViewMainActivity : AppCompatActivity(R.layout.activity_main) {
         }
       }
     }
+
+    viewModel.onRefresh()
   }
 
   private fun render(uiState: UiState) {
