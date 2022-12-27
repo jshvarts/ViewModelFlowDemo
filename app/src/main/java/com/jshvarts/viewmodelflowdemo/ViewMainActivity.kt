@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ViewMainActivity : AppCompatActivity(R.layout.activity_main) {
@@ -17,7 +18,7 @@ class ViewMainActivity : AppCompatActivity(R.layout.activity_main) {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    lifecycleScope.launch { 
+    lifecycleScope.launch {
       lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
         viewModel.userList.collect {
           render(it)
@@ -29,13 +30,13 @@ class ViewMainActivity : AppCompatActivity(R.layout.activity_main) {
   private fun render(uiState: UiState) {
     when (uiState) {
       UiState.Loading -> {
-        println("jls loading")
+        Timber.d("Loading")
       }
       is UiState.Success -> {
-        println("jls success ${uiState.data}")
+        Timber.d("Success ${uiState.data}")
       }
       is UiState.Error -> {
-        println("jls error $uiState")
+        Timber.d("Error ${uiState.throwable}")
       }
     }
   }

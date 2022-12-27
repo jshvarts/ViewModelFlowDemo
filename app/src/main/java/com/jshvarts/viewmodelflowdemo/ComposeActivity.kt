@@ -12,25 +12,29 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jshvarts.viewmodelflowdemo.ui.theme.ViewModelFlowDemoTheme
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ComposeActivity : ComponentActivity() {
 
   private val viewModel by viewModels<MainViewModel>()
 
+  @OptIn(ExperimentalLifecycleComposeApi::class)
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {
       ViewModelFlowDemoTheme {
         // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-          MainScreen(viewModel = viewModel)
+          val userList by viewModel.userList.collectAsStateWithLifecycle()
+          MainScreen(userList = userList)
         }
       }
     }
@@ -39,13 +43,12 @@ class ComposeActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(
-  viewModel: MainViewModel,
+  userList: UiState,
   modifier: Modifier = Modifier
 ) {
-  val userList by viewModel.userList.collectAsState()
   when (userList) {
     UiState.Loading -> {
-      println("jls loading")
+      Timber.d("Loading")
       Box(
         modifier = modifier
           .fillMaxSize()
@@ -55,7 +58,7 @@ fun MainScreen(
     }
     is UiState.Success -> {
       LazyColumn {
-        items((userList as UiState.Success).data) { item ->
+        items(userList.data) { item ->
           Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = modifier
@@ -72,7 +75,7 @@ fun MainScreen(
         modifier = modifier
           .fillMaxSize()
       ) {
-        (userList as UiState.Error).throwable
+        userList.throwable
       }
     }
   }
