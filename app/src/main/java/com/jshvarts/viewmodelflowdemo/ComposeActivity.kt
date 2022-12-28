@@ -25,6 +25,7 @@ import timber.log.Timber
 class ComposeActivity : ComponentActivity() {
 
   private val viewModel by viewModels<MainWithStateInViewModel>()
+  // private val shareInViewModel by viewModels<MainWithShareInViewModel>()
 
   @OptIn(ExperimentalLifecycleComposeApi::class)
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +35,11 @@ class ComposeActivity : ComponentActivity() {
         // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
           val uiState by viewModel.userFlow.collectAsStateWithLifecycle()
+          MainScreen(uiState = uiState)
+
+//          val uiState by shareInViewModel.userFlow.collectAsStateWithLifecycle(
+//            initialValue = UiState.Loading
+//          )
           MainScreen(uiState = uiState)
         }
       }
