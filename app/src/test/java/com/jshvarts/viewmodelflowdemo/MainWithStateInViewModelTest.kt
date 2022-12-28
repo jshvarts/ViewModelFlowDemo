@@ -20,7 +20,7 @@ class MainWithStateInViewModelTest {
 
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
-  fun `when initialized, fake repository emits loading and data`() = runTest {
+  fun `when initialized, repository emits loading and data`() = runTest {
     val viewModel = MainWithStateInViewModel(repository)
 
     val users = listOf(
@@ -35,13 +35,13 @@ class MainWithStateInViewModelTest {
     )
 
     val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
-      viewModel.userList.collect()
+      viewModel.userFlow.collect()
     }
 
-    assertEquals(UiState.Loading, viewModel.userList.value)
+    assertEquals(UiState.Loading, viewModel.userFlow.value)
 
     repository.sendUsers(users)
-    assertEquals(UiState.Success(users), viewModel.userList.value)
+    assertEquals(UiState.Success(users), viewModel.userFlow.value)
 
     collectJob.cancel()
   }

@@ -17,7 +17,7 @@ class MainWithCollectViewModelTest {
 
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
-  fun `when initialized, fake repository emits loading and data`() = runTest {
+  fun `when initialized, repository emits loading and data`() = runTest {
     val viewModel = MainWithCollectViewModel(repository)
 
     val users = listOf(
@@ -31,12 +31,12 @@ class MainWithCollectViewModelTest {
       )
     )
 
-    assertEquals(UiState.Loading, viewModel.userList.value)
+    assertEquals(UiState.Loading, viewModel.userFlow.value)
 
     repository.sendUsers(users)
 
     viewModel.onRefresh()
 
-    assertEquals(UiState.Success(users), viewModel.userList.value)
+    assertEquals(UiState.Success(users), viewModel.userFlow.value)
   }
 }

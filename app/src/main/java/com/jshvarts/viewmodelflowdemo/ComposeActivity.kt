@@ -33,8 +33,8 @@ class ComposeActivity : ComponentActivity() {
       ViewModelFlowDemoTheme {
         // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-          val userList by viewModel.userList.collectAsStateWithLifecycle()
-          MainScreen(userList = userList)
+          val uiState by viewModel.userFlow.collectAsStateWithLifecycle()
+          MainScreen(uiState = uiState)
         }
       }
     }
@@ -43,10 +43,10 @@ class ComposeActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(
-  userList: UiState,
+  uiState: UiState,
   modifier: Modifier = Modifier
 ) {
-  when (userList) {
+  when (uiState) {
     UiState.Loading -> {
       Timber.d("Loading")
       Box(
@@ -58,7 +58,7 @@ fun MainScreen(
     }
     is UiState.Success -> {
       LazyColumn {
-        items(userList.data) { item ->
+        items(uiState.data) { item ->
           Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = modifier
@@ -75,7 +75,7 @@ fun MainScreen(
         modifier = modifier
           .fillMaxSize()
       ) {
-        userList.throwable
+        uiState.throwable
       }
     }
   }

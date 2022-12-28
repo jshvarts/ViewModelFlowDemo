@@ -14,7 +14,7 @@ class MainWithStateInViewModel @Inject constructor(
   userRepository: UserRepository
 ) : ViewModel() {
 
-  val userList: StateFlow<UiState> = userRepository
+  val userFlow: StateFlow<UiState> = userRepository
     .getUsers()
     .asResult()
     .map { result ->

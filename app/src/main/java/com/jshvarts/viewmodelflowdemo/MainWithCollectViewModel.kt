@@ -6,6 +6,8 @@ import com.jshvarts.viewmodelflowdemo.data.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,18 +16,20 @@ class MainWithCollectViewModel @Inject constructor(
   private val userRepository: UserRepository
 ) : ViewModel() {
 
-  private val _userList = MutableStateFlow(UiState.Loading as UiState)
-  val userList: StateFlow<UiState> = _userList
+  private val _userFlow = MutableStateFlow<UiState>(UiState.Loading)
+  val userFlow: StateFlow<UiState> = _userFlow.asStateFlow()
 
   fun onRefresh() {
     viewModelScope.launch {
       userRepository
         .getUsers().asResult()
         .collect { result ->
-          _userList.value = when (result) {
-            is Result.Loading -> UiState.Loading
-            is Result.Success -> UiState.Success(result.data)
-            is Result.Error -> UiState.Error(result.exception)
+          _userFlow.update {
+            when (result) {
+              is Result.Loading -> UiState.Loading
+              is Result.Success -> UiState.Success(result.data)
+              is Result.Error -> UiState.Error(result.exception)
+            }
           }
         }
     }

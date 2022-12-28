@@ -20,7 +20,7 @@ class ViewMainActivity : AppCompatActivity(R.layout.activity_main) {
 
     lifecycleScope.launch {
       lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-        viewModel.userList.collect {
+        viewModel.userFlow.collect {
           render(it)
         }
       }
